@@ -141,7 +141,7 @@ void setaJogadorInicial() {
     srand(time(NULL));
     playerAtual = rand() % 2 + 1;
     const char *nome = getDescricaoPlayerAtual();
-    printf("\n%s começará a partida.: ", nome);
+    printf("\n%s começará a partida...\n", nome);
     system("sleep 1");
     system("clear");
 }
@@ -150,13 +150,9 @@ const char* getNomePlayer(int player) {
     return players[player - 1];
 }
 
-
-
 void *verificaVencedorColuna(void* argx) {
-
     int* p_x = (int*) argx;
     int x = *p_x;
-
     int pedras = 0;
     for (int y = 0; y < linhas; y++) {
         if (obtemValor(x, y) == playerAtual) {
@@ -235,10 +231,10 @@ int venceu(int x, int y) {
     void *ret;
 
     int coordenadas[2] = {x, y};
-    pthread_create(&tid[0], NULL, verificaVencedorColuna, (void *) &x);
-    pthread_create(&tid[1], NULL, verificaVencedorLinha, (void *) &y);
-    pthread_create(&tid[2], NULL, verificaVencedorDiagonalPrincipal, (void *) &coordenadas);
-    pthread_create(&tid[3], NULL, verificaVencedorDiagonalSecundaria, (void *) coordenadas);
+    pthread_create(&tid[0], NULL, &verificaVencedorColuna, (void *) &x);
+    pthread_create(&tid[1], NULL, &verificaVencedorLinha, (void *) &y);
+    pthread_create(&tid[2], NULL, &verificaVencedorDiagonalPrincipal, (void *) &coordenadas);
+    pthread_create(&tid[3], NULL, &verificaVencedorDiagonalSecundaria, (void *) &coordenadas);
 
     for (int t = 0; t < 4; ++t) {
         pthread_join(tid[t], &ret);
@@ -270,7 +266,8 @@ int realizaJogada() {
         if (validaJogada(x, y)) {
             setValor(x, y, playerAtual);
             if (venceu(x, y)) {
-                printf("%s venceu o jogo!", players[playerAtual]);
+                const char *nomePlayer = getDescricaoPlayerAtual();
+                printf("%s venceu o jogo!", nomePlayer);
                 return 0;
             } else if (posicoesOcupadas == colunas * linhas) {
                 printf("Empate!");
