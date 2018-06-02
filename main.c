@@ -151,10 +151,8 @@ const char* getNomePlayer(int player) {
 }
 
 void *verificaVencedorColuna(void* argx) {
-
     int* p_x = (int*) argx;
     int x = *p_x;
-
     int pedras = 0;
     for (int y = 0; y < linhas; y++) {
         if (obtemValor(x, y) == playerAtual) {
